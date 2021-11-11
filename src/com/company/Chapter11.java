@@ -1,60 +1,6 @@
 package com.company;
 
-import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine());
-        String six = "666";
-        int[] minArr = new int[N];
-
-        // 66612
-        // 16662
-        // 12666
-        for(int i=0; i<N; i++){
-            String target = Integer.toString(i);
-            String[] arr = new String[target.length()+1];
-            int min = 0;
-            for(int j=0; j<=target.length(); j++){
-                int index = 0;
-                String num = "";
-
-                for(int k=0; k<=target.length(); k++){
-                    if(k == j){
-                        arr[k] = six;
-                    }else {
-                        String s = Character.toString(target.charAt(index));
-                        arr[k] = s;
-                        index++;
-                    }
-                }
-
-                for(int k=0; k<arr.length; k++){
-                    num += arr[k];
-                }
-
-                if(min == 0){
-                    min = Integer.parseInt(num);
-                }else {
-                    if(min > Integer.parseInt(num)){
-                        min = Integer.parseInt(num);
-                    }
-                }
-            }
-
-            minArr[i] = min;
-        }
-
-        Arrays.sort(minArr);
-        for(int i=0; i<N; i++){
-            System.out.println(minArr[i]);
-        }
-    }
-}
-
-class complete {
+public class Chapter11 {
     /*
     Baekjoon 2798
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
