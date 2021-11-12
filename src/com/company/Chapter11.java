@@ -83,6 +83,64 @@ public class Chapter11 {
 
     /*
     Baekjoon 1436
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+    int cnt = 0;
+    int num = 0;
 
+    while (true) {
+        num++;
+        String s = Integer.toString(num);
+
+        if (s.contains("666")) {
+            cnt++;
+        }
+
+        if (cnt == N) {
+            break;
+        }
+    }
+
+    System.out.println(num);
+
+    // 나중에 이 아이디어로도 구현해보자
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        int N = Integer.parseInt(br.readLine());
+//        String six = "666";
+//        int[] minArr = new int[N];
+//        HashSet<Integer> set = new HashSet<>();
+//
+//        for(int i=0; i<N; i++){
+//            String target = Integer.toString(i);
+//            String[] arr = new String[target.length()+1];
+//            int min = 0;
+//            for(int j=0; j<=target.length(); j++){
+//                int index = 0;
+//                String num = "";
+//
+//                for(int k=0; k<=target.length(); k++){
+//                    if(k == j){
+//                        arr[k] = six;
+//                    }else {
+//                        String s = Character.toString(target.charAt(index));
+//                        arr[k] = s;
+//                        index++;
+//                    }
+//                }
+//
+//                for(int k=0; k<arr.length; k++){
+//                    num += arr[k];
+//                }
+//
+//                set.add(Integer.parseInt(num));
+//            }
+//        }
+//
+//        List<Integer> list = new ArrayList<>(set);
+//        list.sort(Comparator.naturalOrder());
+//
+//        for(int i=0; i<N; i++){
+//            System.out.println(list.get(i));
+//        }
     */
 }
