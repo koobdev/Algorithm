@@ -6,20 +6,30 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) throws IOException {
 
+        // 풀이중 ............
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        int[] inputArr = new int[N];
+        // 2 4 -10 4 -9
+        // -10 -9 2 4 4
+        for(int i=0; i<N; i++){
+            inputArr[i] = Integer.parseInt(st.nextToken());
+        }
+
+        for(int i=0; i<N; i++){
+            for(int j=0; j<N; j++){
+
+            }
+        }
     }
 }
-//
 //    double beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
-//
 //    double afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
 //    double secDiffTime = (afterTime - beforeTime)/1000; //두 시간에 차 계산
 //        System.out.println("시간차이(m) : "+secDiffTime);
 class complete {
-    /*
-    Baekjoon 2798
-
-    */
-
     /*
     Baekjoon 2750
     // O(n²) : 선택정렬
@@ -241,17 +251,136 @@ class complete {
     */
 
     /*
-    Baekjoon 2798
+    Baekjoon 1427
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String st = br.readLine();
+    Integer[] arr = new Integer[st.length()];
 
+    for(int i=0; i<st.length(); i++){
+        arr[i] = st.charAt(i)-'0';
+    }
+
+    Arrays.sort(arr, Collections.reverseOrder());
+
+    for(int i : arr){
+        System.out.print(i);
+    }
     */
 
     /*
-    Baekjoon 2798
+    Baekjoon 11650
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+    int[][] arr = new int[N][2];
 
+    for(int i=0; i<N; i++){
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        arr[i][0] = Integer.parseInt(st.nextToken());
+        arr[i][1] = Integer.parseInt(st.nextToken());
+    }
+
+    Arrays.sort(arr, new Comparator<int []>(){
+        @Override
+        public int compare(int[] o1, int[] o2) {
+            if(o1[0] == o2[0]){
+                return o1[1] - o2[1];
+            }else {
+                return o1[0] - o2[0];
+            }
+        }
+    });
+
+    for(int i=0; i<N; i++){
+        System.out.print(arr[i][0] + " ");
+        System.out.println(arr[i][1]);
+    }
     */
 
     /*
-    Baekjoon 2798
+    Baekjoon 11651
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+    int[][] arr = new int[N][2];
+
+    for(int i=0; i<N; i++){
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        arr[i][0] = Integer.parseInt(st.nextToken());
+        arr[i][1] = Integer.parseInt(st.nextToken());
+    }
+
+    Arrays.sort(arr, new Comparator<int[]>(){
+        @Override
+        public int compare(int[] o1, int[] o2) {
+            if(o1[1] == o2[1]){
+                return o1[0] - o2[0];
+            }else {
+                return o1[1] - o2[1];
+            }
+        }
+    });
+
+    for(int i=0; i<N; i++){
+        System.out.print(arr[i][0] + " ");
+        System.out.println(arr[i][1]);
+    }
+    */
+
+    /*
+    Baekjoon 1181
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+    String[] arr = new String[N];
+
+    for(int i=0; i<N; i++){
+        String st = br.readLine();
+        arr[i] = st;
+    }
+
+    Arrays.sort(arr, new Comparator<String>(){
+        @Override
+        public int compare(String o1, String o2) {
+            if(o1.length() == o2.length()){
+                return o1.compareTo(o2);
+            }else {
+                return o1.length() - o2.length();
+            }
+        }
+    });
+
+    for(int i=0; i<N; i++){
+        if(i+1<arr.length && arr[i].equals(arr[i+1])){
+            continue;
+        }
+        System.out.println(arr[i]);
+    }
+    */
+
+    /*
+    Baekjoon 10814
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+    String[][] arr = new String[N][2];
+
+    for(int i=0; i<N; i++){
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        arr[i][0] = st.nextToken();
+        arr[i][1] = st.nextToken();
+    }
+
+    Arrays.sort(arr, new Comparator<String[]>() {
+        @Override
+        public int compare(String[] o1, String[] o2) {
+            return Integer.parseInt(o1[0]) - Integer.parseInt(o2[0]);
+        }
+    });
+
+    for(int i=0; i<arr.length; i++){
+        System.out.println(arr[i][0] + " " + arr[i][1]);
+    }
+    */
+
+    /*
+    Baekjoon 18870
 
     */
 }
