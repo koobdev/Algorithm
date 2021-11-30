@@ -23,84 +23,105 @@ class Dot{
 
 public class Main {
 
-    static int N;
     static int M;
-    static int H;
-    static int max = 0;
+    static int N;
+    static int[] dx = {-1, 0, 1, 0};
+    static int[] dy = {0, 1, 0, -1};
+    static int[][] matrix;
+    static boolean[][] visit;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
-        N = Integer.parseInt(st1.nextToken());
-        M = Integer.parseInt(st1.nextToken());
-        H = Integer.parseInt(st1.nextToken());
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        M = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+        matrix = new int[N+1][M+1];
+        visit = new boolean[N+1][M+1];
 
-        int[][] arr = new int[M*H][N];
-        boolean[][] visit = new boolean[M*H][N];
-
-        for(int i=0; i<M*H; i++){
-            StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
+        for(int i=0; i<M; i++){
+            String line = br.readLine();
             for(int j=0; j<N; j++){
-                arr[i][j] = Integer.parseInt(st2.nextToken());
+                matrix[j+1][i+1] = line.charAt(j)-'0';
             }
         }
-        bfs(arr, visit);
+        bfs(1);
 
-        for(int i=0; i<M*H; i++){
-            for(int j=0; j<N; j++){
-                System.out.print(arr[i][j] + "  ");
+        for(int i=1; i<=M; i++){
+            for(int j=1; j<=N; j++){
+                System.out.print(matrix[j][i]);
             }
             System.out.println("\n");
         }
-
-        if (isCom(arr)) {
-            System.out.println(max - 1);
-        } else {
-            System.out.println("-1");
-        }
-
     }
 
-    public static void bfs(int[][] arr, boolean[][] visit){
+    public static void bfs(int start){
         Queue<Dot> queue = new LinkedList<>();
-        int[] dx = {-1, 0, 1, 0, M, M*(-1)};
-        int[] dy = {0, 1, 0, -1, 0, 0};
-
-        for(int i=0; i<M*H; i++){
-            for(int j=0; j<N; j++){
-                if(arr[i][j] == 1){
-                    queue.add(new Dot(i, j));
-                    visit[i][j] = true;
-                }
-            }
-        }
+        visit[start][start] = true;
+        queue.add(new Dot(start, start));
 
         while(!queue.isEmpty()){
             Dot dot = queue.poll();
-            for(int i=0; i<6; i++){
-                int x = dot.getX()+dx[i];
-                int y = dot.getY()+dy[i];
+            for(int i=0; i<4; i++){
+                if(!checking(dot)){
+                    // 사방이 막혀있을 때
+                    boolean flag = false;
 
-                if(dot.getX()<M && x>=M) continue;
-                if(x>=0 && x<M*H && y>=0 && y<N) {
-                    if(arr[x][y] == 0 && !visit[x][y]){
-                        visit[x][y] = true;
-                        arr[x][y] = arr[dot.getX()][dot.getY()] + 1;
+                    for(int j=0; j<4; j++){
+                        int x = dot.getX() + dx[j];
+                        int y = dot.getY() + dy[j];
+
+                        if(x>1 && x<=N && y>1 && y<=M){
+                            matrix[x][y] = 0;
+                            visit[x][y] = true;
+                            matrix[x][y] = matrix[dot.getX()][dot.getY()] + 1;
+
+                            if(!checking(new Dot(x, y))){
+                                // 사방이 막혔을 때
+                                matrix[x][y] = 1;
+                                visit[x][y] = false;
+                                continue;
+                            }else{
+                                // 뚫린 곳이 있을 때
+                                queue.add(new Dot(x, y));
+                                while(!queue.isEmpty()){
+                                    for(int k=0; k<4; k++){
+                                        if(x>1 && x<=N && y>1 && y<=M && matrix[x][y] == 0){
+                                            queue.add(new Dot(x, y));
+                                            visit[x][y] = true;
+                                            matrix[x][y] = matrix[dot.getX()][dot.getY()] + 1;
+                                        }
+                                    }
+                                }
+                                flag = true;
+                            }
+                        }
+                    }
+                }else{
+                    // 뚫린곳이 있을 때
+                    int x = dot.getX() + dx[i];
+                    int y = dot.getY() + dy[i];
+
+                    if(x>1 && x<=N && y>1 && y<=M && matrix[x][y] == 0){
                         queue.add(new Dot(x, y));
+                        visit[x][y] = true;
+                        matrix[x][y] = matrix[dot.getX()][dot.getY()] + 1;
                     }
                 }
             }
         }
     }
 
-    public static boolean isCom(int[][] arr){
-        for(int i=0; i<M*H; i++){
-            for(int j=0; j<N; j++){
-                if(arr[i][j] == 0) return false;
-                else if(arr[i][j] > max) max = arr[i][j];
+    public static boolean checking(Dot dot){
+        boolean flag = false;
+        for(int i=0; i<4; i++){
+            int x = dot.getX() + dx[i];
+            int y = dot.getY() + dy[i];
+
+            if(x>1 && x<=N && y>1 && y<=M && matrix[x][y] == 0){
+                flag = true;
             }
         }
-        return true;
+        return flag;
     }
 }
 
@@ -556,7 +577,166 @@ class complete {
      */
 
     /*
-    Baekjoon 7576
+    Baekjoon 7576  -  디버깅 요망
+    class Dot{
+        private int x;
+        private int y;
+
+        public Dot(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+    }
+
+    public class Main {
+
+        static int N;
+        static int M;
+        static int H;
+        static int max = 0;
+
+        public static void main(String[] args) throws IOException {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
+            M = Integer.parseInt(st1.nextToken());
+            N = Integer.parseInt(st1.nextToken());
+            H = Integer.parseInt(st1.nextToken());
+
+            int[][] arr = new int[M][N*H];
+            boolean[][] visit = new boolean[M][N*H];
+
+            for(int i=0; i<N*H; i++){
+                StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
+                for(int j=0; j<M; j++){
+                    arr[j][i] = Integer.parseInt(st2.nextToken());
+                }
+            }
+
+            bfs(arr, visit);
+
+    //        for(int i=0; i<N*H; i++){
+    //            for(int j=0; j<M; j++){
+    //                System.out.print(arr[j][i] + "  ");
+    //            }
+    //            System.out.println("\n");
+    //        }
+
+            if (isCom(arr)) {
+                System.out.println(max - 1);
+            } else {
+                System.out.println("-1");
+            }
+
+        }
+
+        public static void bfs(int[][] arr, boolean[][] visit){
+            Queue<Dot> queue = new LinkedList<>();
+            int[] dx = {-1, 0, 1, 0, 0, 0};
+            int[] dy = {0, 1, 0, -1, N, N*(-1)};
+
+            for(int i=0; i<N*H; i++){
+                for(int j=0; j<M; j++){
+                    if(arr[j][i] == 1){
+                        queue.add(new Dot(j, i));
+                        visit[j][i] = true;
+                    }
+                }
+            }
+
+            while(!queue.isEmpty()){
+                Dot dot = queue.poll();
+                for(int i=0; i<6; i++){
+                    int x = dot.getX()+dx[i];
+                    int y = dot.getY()+dy[i];
+    //                System.out.println("x, y : (" + x + ", " + y + ")");
+
+                    if(x>=0 && x<M && y>=0 && y<N*H) {
+                        if(arr[x][y] == 0 && !visit[x][y]){
+                            visit[x][y] = true;
+                            arr[x][y] = arr[dot.getX()][dot.getY()] + 1;
+                            queue.add(new Dot(x,y));
+                        }
+                    }
+                }
+            }
+        }
+
+        public static boolean isCom(int[][] arr){
+            for(int i=0; i<N*H; i++){
+                for(int j=0; j<M; j++){
+                    if(arr[j][i] == 0) return false;
+                    else if(arr[j][i] > max) max = arr[j][i];
+                }
+            }
+            return true;
+        }
+    }
+     */
+
+    /*
+    Baekjoon 1697
+    public class Main {
+        static int cnt = 1;
+        static int[] visit = new int[100001];
+        public static void main(String[] args) throws IOException {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+            int N = Integer.parseInt(st.nextToken());
+            int K = Integer.parseInt(st.nextToken());
+            Arrays.fill(visit, 0);
+
+            if(N == K){
+                System.out.println(0);
+            }else {
+                int X = bfs(N, K);
+                System.out.println(visit[X]);
+            }
+
+        }
+
+        public static int bfs(int N, int K){
+            int result = 0;
+            Queue<Integer> queue = new LinkedList<>();
+            queue.add(N);
+            visit[N] = cnt;
+
+            loop :
+            while(!queue.isEmpty()){
+                int x = queue.poll();
+
+                for(int i=0; i<3; i++){
+                    int next;
+
+                    if(i == 0) next = x-1;
+                    else if(i==1) next = x+1;
+                    else next = x*2;
+
+                    if(next == K){
+                        result = x;
+                        break loop;
+                    }
+
+                    if(next>=0 && next<visit.length && visit[next] == 0){
+                        visit[next] = visit[x] + 1;
+                        queue.add(next);
+                    }
+                }
+            }
+            return result;
+        }
+    }
+     */
+
+    /*
+    Baekjoon 2206
 
      */
 }
