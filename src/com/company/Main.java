@@ -1,83 +1,87 @@
 package com.company;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.io.*;
 
 public class Main {
     static int N;
-    static int[] number;
-    static int[] operator;
-    static List<Integer> list = new ArrayList<>();
+    static int[][] arr;
+    static boolean[] isMatched;
+    static boolean[] isVisited;
+    static int[] startTeam;
+    static int[] linkTeam;
+    static int[] startTeamPoint;
+    static int[] linkTeamPoint;
+    static int startTeamSum;
+    static int linkTeamSum;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        number = new int[N];
-        operator = new int[4];
-        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
-        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
+        arr = new int[N][N];
+        isMatched = new boolean[N];
+        isVisited = new boolean[N/2];
+        startTeam = new int[N/2];
+        linkTeam = new int[N/2];
+        startTeamPoint = new int[2];
+        linkTeamPoint = new int[2];
+
+        Arrays.fill(isMatched, false);
 
         for(int i=0; i<N; i++){
-            number[i] = Integer.parseInt(st1.nextToken());
-        }
-        for(int i=0; i<4; i++){
-            operator[i] = Integer.parseInt(st2.nextToken());
+            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+            for(int j=0; j<N; j++){
+                arr[j][i] = Integer.parseInt(st.nextToken());
+            }
         }
 
-        makeCalc(0, 0, -1);
-        Collections.sort(list);
-//        System.out.println(list.get(list.size()-1) + "\n" + list.get(0));
+        matchTeam(0);
     }
 
-    public static void makeCalc(int depth, int num, int oper){
-        int recursiveCalc = 0;
+    public static void matchTeam(int depth){
+        if(depth == N/2){
+//            for(int i=0; i<isMatched.length; i++){
+//                System.out.print(isMatched[i] + " ");
+//            }
+//            System.out.println("\n");
+//
+//            for(int i=0; i<depth; i++){
+//                for(int j=0; j<6; j++){
+//
+//                }
+//            }
+//            System.out.println(startTeam[0] + " " + linkTeam[1]);
 
-        if(depth == N){
-            list.add(recursiveCalc);
+            ability(0);
+            System.out.println("start : " + startTeamSum + "link : " + linkTeamSum);
             return;
         }
 
         for(int i=0; i<N; i++){
-            if(oper != -1){
-                recursiveCalc = calc(depth, num, oper);
-            }else {
-                recursiveCalc = number[depth];
-            }
-            if(operator[i] != 0){
-//                recursiveCalc = calc(recursiveCalc, i);
-                makeCalc(depth+1, recursiveCalc, i);
+            if(!isMatched[i]){
+                if(depth == 0 || (depth-1>=0 && startTeam[depth-1]<i+1)){
+                    isMatched[i] = true;
+                    startTeam[depth] = i+1;
+                    matchTeam(depth+1);
+                    isMatched[i] = false;
+                }
             }
         }
     }
 
-    public static int calc(int depth, int num, int index){
-        int result = 0;
-        switch (index){
-            case 0:
-                result = number[depth] + num;
-                break;
-            case 1:
-                result = number[depth] - num;
-                break;
-            case 2:
-                result = number[depth] * num;
-                break;
-            case 3:
-                result = number[depth] / num;
-                break;
+    public static void ability(int depth){
+        if(depth == 2){
+            startTeamSum += arr[startTeamPoint[1]][startTeamPoint[0]];
+            linkTeamSum += arr[linkTeamPoint[1]][linkTeamPoint[0]];
         }
-        return result;
+
+        for(int i=0; i<N/2; i++){
+            startTeamPoint[depth] = startTeam[i];
+            linkTeamPoint[depth] = linkTeam[i];
+            ability(depth+1);
+        }
     }
-
-
-//    public static boolean isPossible(int index){
-//        for(int i=0; i<4; i++){
-//            if(operator[i] != 0){
-//
-//            }
-//        }
-//        return true;
-//    }
 }
 
 //    double beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
@@ -380,7 +384,67 @@ class complete {
 
     /*
     Baekjoon 14888
+    public class Main {
+        static int N;
+        static int[] number;
+        static int[] operator;
+        static List<Integer> list = new ArrayList<>();
 
+        public static void main(String[] args) throws IOException {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            N = Integer.parseInt(br.readLine());
+            number = new int[N];
+            operator = new int[4];
+            StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
+            StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
+
+            for(int i=0; i<N; i++){
+                number[i] = Integer.parseInt(st1.nextToken());
+            }
+            for(int i=0; i<4; i++){
+                operator[i] = Integer.parseInt(st2.nextToken());
+            }
+
+            makeCalc(1, number[0]);
+            Collections.sort(list);
+            System.out.println(list.get(list.size()-1) + "\n" + list.get(0));
+        }
+
+        public static void makeCalc(int depth, int num){
+            if(depth == N){
+                list.add(num);
+                return;
+            }
+
+            for(int i=0; i<4; i++){
+                if(operator[i] != 0){
+                    operator[i]--;
+                    int calc = calc(depth, num, i);
+                    makeCalc(depth+1, calc);
+                    operator[i]++;
+                }
+            }
+        }
+
+        public static int calc(int depth, int num, int index){
+            int result = 0;
+            switch (index){
+                case 0:
+                    result = num + number[depth];
+                    break;
+                case 1:
+                    result = num - number[depth];
+                    break;
+                case 2:
+                    result = num * number[depth];
+                    break;
+                case 3:
+                    result = num / number[depth];
+                    break;
+            }
+            return result;
+        }
+    }
      */
 
     /*
