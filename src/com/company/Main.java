@@ -4,58 +4,80 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-
-    public static int[] arr;
-    public static int N;
-    public static int count = 0;
+    static int N;
+    static int[] number;
+    static int[] operator;
+    static List<Integer> list = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        arr = new int[N];
+        number = new int[N];
+        operator = new int[4];
+        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
+        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
 
-        nQueen(0);
-        System.out.println(count);
+        for(int i=0; i<N; i++){
+            number[i] = Integer.parseInt(st1.nextToken());
+        }
+        for(int i=0; i<4; i++){
+            operator[i] = Integer.parseInt(st2.nextToken());
+        }
 
+        makeCalc(0, 0, -1);
+        Collections.sort(list);
+//        System.out.println(list.get(list.size()-1) + "\n" + list.get(0));
     }
 
-    public static void nQueen(int depth) {
-        // 모든 원소를 다 채운 상태면 count 증가 및 return
-        if (depth == N) {
-            count++;
+    public static void makeCalc(int depth, int num, int oper){
+        int recursiveCalc = 0;
+
+        if(depth == N){
+            list.add(recursiveCalc);
             return;
         }
 
-        for (int i = 0; i < N; i++) {
-            arr[depth] = i;
-            // 놓을 수 있는 위치일 경우 재귀호출
-            if (Possibility(depth)) {
-                nQueen(depth + 1);
+        for(int i=0; i<N; i++){
+            if(oper != -1){
+                recursiveCalc = calc(depth, num, oper);
+            }else {
+                recursiveCalc = number[depth];
+            }
+            if(operator[i] != 0){
+//                recursiveCalc = calc(recursiveCalc, i);
+                makeCalc(depth+1, recursiveCalc, i);
             }
         }
-
     }
 
-    public static boolean Possibility(int col) {
-
-        for (int i = 0; i < col; i++) {
-            // 해당 열의 행과 i열의 행이 일치할경우 (같은 행에 존재할 경우)
-            if (arr[col] == arr[i]) {
-                return false;
-            }
-
-            /*
-             * 대각선상에 놓여있는 경우
-             * (열의 차와 행의 차가 같을 경우가 대각선에 놓여있는 경우다)
-             */
-            else if (Math.abs(col - i) == Math.abs(arr[col] - arr[i])) {
-                return false;
-            }
+    public static int calc(int depth, int num, int index){
+        int result = 0;
+        switch (index){
+            case 0:
+                result = number[depth] + num;
+                break;
+            case 1:
+                result = number[depth] - num;
+                break;
+            case 2:
+                result = number[depth] * num;
+                break;
+            case 3:
+                result = number[depth] / num;
+                break;
         }
-
-        return true;
+        return result;
     }
+
+
+//    public static boolean isPossible(int index){
+//        for(int i=0; i<4; i++){
+//            if(operator[i] != 0){
+//
+//            }
+//        }
+//        return true;
+//    }
 }
 
 //    double beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
@@ -243,11 +265,126 @@ class complete {
 
     /*
     Baekjoon 9663
+    public class Main {
+        static int N;
+        static int[] arr;
+        static int cnt=0;
+
+        public static void main(String[] args) throws IOException {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            N = Integer.parseInt(br.readLine());
+            arr = new int[N];
+
+            nQueen(0);
+            System.out.println(cnt);
+        }
+
+        // column : 행, i : 열
+        public static void nQueen(int column){
+            if(column == N) {
+                cnt++;
+                return;
+            }
+            for(int i=0; i<N; i++){
+                arr[column] = i;
+                if(isPossible(column)){
+                    nQueen(column+1);
+                }
+            }
+        }
+
+        // 퀸이 움직일 수 있는 위치에 다른 퀸이 있는지 판단
+        public static boolean isPossible(int column){
+            for(int i=0; i<column; i++){
+                if(arr[i] == arr[column]){
+                    // 같은 열에 있을 때
+                    return false;
+                }else if(Math.abs(i-column) == Math.abs(arr[i]-arr[column])){
+                    // 대각선에 있을 때
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+     */
+
+    /*
+    Baekjoon 2580 - 아직 풀이중.....
+    public class Main {
+        static int[][] matrix = new int[9][9];
+
+        public static void main(String[] args) throws IOException {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            for(int i=0; i<9; i++){
+                String line = br.readLine();
+                for(int j=0; j<9; j++){
+                    StringTokenizer st = new StringTokenizer(line, " ");
+                    matrix[j][i] = Integer.parseInt(st.nextToken());
+                }
+            }
+
+            sudoku(0, 0);
+        }
+
+        public static void sudoku(int column, int row){
+            System.out.println(row);
+            if(row == 9) {
+                for(int i=0; i<9; i++){
+                    for(int j=0; j<9; j++){
+                        System.out.println(matrix[j][i] + " ");
+                    }
+                    System.out.println("\n");
+                }
+                return;
+            }
+
+            if(matrix[column][row] == 0){
+                for(int i=1; i<=9; i++){
+                    if(isCorrect(column, row, i)){
+                        matrix[column][row] = i;
+                        sudoku(column, row+1);
+                    }
+                }
+            }
+        }
+
+        public static boolean isCorrect(int column, int row, int value){
+            // 1. 가로 확인
+            for(int i=0; i<9; i++){
+                if(matrix[i][row] == value){
+                    return false;
+                }
+            }
+
+            // 2. 세로 확인
+            for(int i=0; i<9; i++){
+                if(matrix[column][i] == value){
+                    return false;
+                }
+            }
+
+            // 3. 3*3 확인
+            for(int i=0; i<(row/3)*3+3; i++){
+                for(int j=0; j<(row/3)*3+3; j++){
+                    if(matrix[j][i] == value){
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
+     */
+
+    /*
+    Baekjoon 14888
 
      */
 
     /*
-    Baekjoon 9663
+    Baekjoon 14889
 
      */
 }
